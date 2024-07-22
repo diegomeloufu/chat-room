@@ -8,7 +8,7 @@ const rl = readline.createInterface({
 
 const serverAddress = process.argv[2];
 const clientId = process.argv[3];
-const url = `ws://${serverAddress}`;
+const url = `wss://${serverAddress}`;
 
 const socket = new WebSocket(url);
 
