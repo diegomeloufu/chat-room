@@ -1,10 +1,14 @@
-const net = require('net');
+const WebSocket = require('ws');
+
+const PORT = process.env.PORT || 3000;
+const server = new WebSocket.Server({ port: PORT });
+
 const clients = {};
 
-const server = net.createServer((socket) => {
-  socket.on('data', (data) => {
-    const message = data.toString().trim();
-    const [command, clientId, ...rest] = message.split(' ');
+server.on('connection', (socket) => {
+  socket.on('message', (message) => {
+    const data = message.toString().trim();
+    const [command, clientId, ...rest] = data.split(' ');
 
     switch (command) {
       case 'LOGIN':
@@ -31,7 +35,7 @@ const server = net.createServer((socket) => {
     }
   });
 
-  socket.on('end', () => {
+  socket.on('close', () => {
     for (let clientId in clients) {
       if (clients[clientId] === socket) {
         delete clients[clientId];
@@ -45,20 +49,19 @@ const server = net.createServer((socket) => {
 const broadcast = (message, senderSocket) => {
   for (let clientId in clients) {
     if (clients[clientId] !== senderSocket) {
-      clients[clientId].write(message);
+      clients[clientId].send(message);
     }
   }
 };
 
 const sendToClient = (clientId, message) => {
   if (clients[clientId]) {
-    clients[clientId].write(message);
+    clients[clientId].send(message);
   } else {
     console.log(`Client ${clientId} not found`);
   }
 };
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.on('listening', () => {
   console.log(`Server is listening on port ${PORT}`);
 });

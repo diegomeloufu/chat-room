@@ -1,4 +1,4 @@
-const net = require('net');
+const WebSocket = require('ws');
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -6,29 +6,30 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const client = new net.Socket();
 const serverAddress = process.argv[2];
-const serverPort = process.argv[3];
-const clientId = process.argv[4];
+const clientId = process.argv[3];
+const url = `ws://${serverAddress}`;
 
-client.connect(serverPort, serverAddress, () => {
-  console.log(`Connected to server at ${serverAddress}:${serverPort}`);
-  client.write(`LOGIN ${clientId}`);
+const socket = new WebSocket(url);
+
+socket.on('open', () => {
+  console.log(`Conectado ao servidor em ${serverAddress}`);
+  socket.send(`LOGIN ${clientId}`);
 });
 
-client.on('data', (data) => {
+socket.on('message', (data) => {
   console.log(data.toString().trim());
 });
 
-client.on('close', () => {
-  console.log('Connection closed');
+socket.on('close', () => {
+  console.log('Conexão encerrada');
 });
 
 rl.on('line', (input) => {
-  client.write(input);
+  socket.send(input);
 });
 
 rl.on('close', () => {
-  client.write(`LOGOFF ${clientId}`);
-  client.end();
+  socket.send(`LOGOFF ${clientId}`);
+  socket.close();
 });
