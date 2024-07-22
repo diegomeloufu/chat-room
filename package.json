@@ -1,24 +1,15 @@
 {
   "name": "chat-room",
   "version": "1.0.0",
-  "description": "A simple chat room application using Node.js and sockets",
+  "description": "A simple chat room application using Node.js and WebSockets",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "client": "node client.js",
     "build": "echo 'No build step'"
   },
-  "keywords": [
-    "chat",
-    "nodejs",
-    "socket",
-    "tcp"
-  ],
-  "author": "Seu Nome",
-  "license": "ISC",
   "dependencies": {
-    "net": "^1.0.2",
-    "readline": "^1.3.0",
-    "ws": "^8.18.0"
-  }
+    "ws": "^8.2.3"
+  },
+  "author": "Diego Melo",
+  "license": "ISC"
 }
