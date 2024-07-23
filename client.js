@@ -1,35 +1,23 @@
 const WebSocket = require('ws');
-const readline = require('readline');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const serverUrl = process.argv[2] || 'ws://localhost:3000';
+const clientId = process.argv[3] || 'client1';
 
-const serverAddress = process.argv[2];
-const clientId = process.argv[3];
-const url = `wss://${serverAddress}`;
-
-const socket = new WebSocket(url);
+const socket = new WebSocket(serverUrl);
 
 socket.on('open', () => {
-  console.log(`Conectado ao servidor em ${serverAddress}`);
+  console.log(`Connected to server at ${serverUrl}`);
   socket.send(`LOGIN ${clientId}`);
 });
 
 socket.on('message', (data) => {
-  console.log(data.toString().trim());
+  console.log(`Received message: ${data}`);
 });
 
 socket.on('close', () => {
-  console.log('Conexão encerrada');
+  console.log('Connection closed');
 });
 
-rl.on('line', (input) => {
-  socket.send(input);
-});
-
-rl.on('close', () => {
-  socket.send(`LOGOFF ${clientId}`);
-  socket.close();
+socket.on('error', (error) => {
+  console.error(`Connection error: ${error.message}`);
 });
