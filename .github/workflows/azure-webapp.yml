@@ -25,7 +25,8 @@ jobs:
         run: ls -la
 
       - name: Create ZIP package
-        run: zip -r myapp.zip *
+        run: |
+          zip -r myapp.zip .
 
       - name: List ZIP package content for debugging
         run: unzip -l myapp.zip
