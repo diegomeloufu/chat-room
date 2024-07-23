@@ -1,11 +1,16 @@
 const WebSocket = require('ws');
+const http = require('http');
 
 const PORT = process.env.PORT || 3000;
-const wss = new WebSocket.Server({ port: PORT });
+
+const server = http.createServer();
+
+const wss = new WebSocket.Server({ server });
 
 const clients = {};
 
 wss.on('connection', (socket) => {
+  console.log('A new client connected.');
   socket.on('message', (message) => {
     const data = message.toString().trim();
     const [command, clientId, ...rest] = data.split(' ');
@@ -62,6 +67,6 @@ const sendToClient = (clientId, message) => {
   }
 };
 
-wss.on('listening', () => {
+server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
