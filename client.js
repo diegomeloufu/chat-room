@@ -6,8 +6,8 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const serverAddress = process.argv[2];
-const clientId = process.argv[3];
+const serverAddress = process.argv[2] || 'localhost:3000';
+const clientId = process.argv[3] || 'client1';
 const url = `ws://${serverAddress}`;  // Usar ws:// para conexões locais
 
 const socket = new WebSocket(url);

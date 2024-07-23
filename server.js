@@ -1,11 +1,11 @@
 const WebSocket = require('ws');
 
 const PORT = process.env.PORT || 3000;
-const server = new WebSocket.Server({ port: PORT });
+const wss = new WebSocket.Server({ port: PORT });
 
 const clients = {};
 
-server.on('connection', (socket) => {
+wss.on('connection', (socket) => {
   socket.on('message', (message) => {
     const data = message.toString().trim();
     const [command, clientId, ...rest] = data.split(' ');
@@ -62,6 +62,6 @@ const sendToClient = (clientId, message) => {
   }
 };
 
-server.on('listening', () => {
+wss.on('listening', () => {
   console.log(`Server is listening on port ${PORT}`);
 });
